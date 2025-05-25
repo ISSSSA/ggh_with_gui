@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-import datetime
+import time
 from typing import List
 
 ERROR_VECTOR = np.array([1, -1, 0, 1, 0])
@@ -91,17 +91,15 @@ class GGHModernGUI:
         text.pack(fill='both', expand=True)
 
     def insert_sample_matrix(self):
-        sample = """5 0 0 0 0
-0 4 0 0 0
-0 0 3 0 0
-0 0 0 2 0
-0 0 0 0 1"""
+        sample = """7 0 0
+0 5 0
+0 0 3"""
         self.matrix_text.delete('1.0', END)
         self.matrix_text.insert('1.0', sample)
 
     def insert_sample_vector(self):
         self.vector_entry.delete(0, END)
-        self.vector_entry.insert(0, "2 -1 3 0 1")
+        self.vector_entry.insert(0, "2 -1 3")
 
     def clear_fields(self):
         self.matrix_text.delete('1.0', END)
@@ -165,15 +163,15 @@ class GGHModernGUI:
             return
 
         try:
+            time_now = time.time()
             public_key = self.generate_public_key(private_key.shape[0], private_key)
-            time_now = datetime.datetime.now()
             encrypted = np.matmul(message, public_key)
-            print(f"Время на шифрование {datetime.datetime.now() - time_now}")
-            time_now = datetime.datetime.now()
+            print(f"Время на шифрование {time.time() - time_now}")
+            time_now = time.time()
             u = np.matmul(encrypted, np.linalg.inv(private_key))
             u = np.matmul(np.rint(u), private_key)
             decrypted = np.matmul(u, np.linalg.inv(public_key))
-            print(f"Время на дешифрование {datetime.datetime.now() - time_now}")
+            print(f"Время на дешифрование {time.time() - time_now}")
             self.encrypted_result.config(text=str(encrypted))
             self.decrypted_result.config(text=str(decrypted))
 
